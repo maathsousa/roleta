@@ -1,0 +1,157 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #ff9999, #cc3333); /* Tons mais suaves de vermelho */
+}
+
+h1{
+    text-align: center;
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.wrapper {
+    width: 90%;
+    max-width: 34.37em;
+    max-height: 90vh;
+    background-color: #ffffff;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    padding: 3em;
+    border-radius: 1em;
+    box-shadow: 0 4em 5em rgba(120, 20, 20, 0.2);
+}
+.container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+#wheel {
+    max-height: inherit;
+    width: inherit;
+    top: 0;
+    padding: 0;
+}
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+#spin-btn {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    height: 26%;
+    width: 26%;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 0;
+    background: radial-gradient(#ffdd57 50%, #ff9933 85%);
+    color: #995c00;
+    text-transform: uppercase;
+    font-size: 1.3em;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+img {
+    position: absolute;
+    width: 4em;
+    top: 45%;
+    right: -8%;
+}
+#final-value {
+    font-size: 1.5em;
+    text-align: center;
+    margin-top: 1.5em;
+    color: #202020;
+    font-weight: 500;
+}
+.input-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+#new-value {
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #d94f4f;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+#add-btn {
+    padding: 10px 15px;
+    background-color: #cc3333;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+}
+#add-btn:hover {
+    background-color: #992222;
+}
+
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.confetti {
+    position: absolute;
+    top: -20px;
+    border-radius: 50%;
+    opacity: 0;
+    animation: fall linear infinite, swing ease-in-out infinite, fadeIn 1.5s ease-in-out forwards;
+}
+
+/* Fade-in para os confetes aparecerem suavemente */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Confetes caindo em velocidades diferentes */
+@keyframes fall {
+    from {
+        transform: translateY(0vh) rotate(0deg);
+        top: -20px;
+    }
+    to {
+        transform: translateY(100vh) rotate(720deg);
+        top: 100vh;
+    }
+}
+
+/* Movimento lateral aleatório */
+@keyframes swing {
+    0% { transform: translateX(0px) rotate(0deg); }
+    25% { transform: translateX(15px) rotate(90deg); }
+    50% { transform: translateX(-15px) rotate(180deg); }
+    75% { transform: translateX(15px) rotate(270deg); }
+    100% { transform: translateX(0px) rotate(360deg); }
+}
+
+
+@media screen and (max-width: 768px) {
+    .wrapper {
+        font-size: 12px;
+    }
+    img {
+        right: -5%;
+    }
+}
