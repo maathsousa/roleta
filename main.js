@@ -5,10 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     tabButtons.forEach(button => {
         button.addEventListener("click", () => {
             const targetTab = button.dataset.tab;
-
             tabButtons.forEach(btn => btn.classList.remove("active"));
             tabContents.forEach(tab => tab.classList.remove("active"));
-
             button.classList.add("active");
             document.getElementById(targetTab).classList.add("active");
         });
@@ -52,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     legend: { display: false },
                     datalabels: {
                         color: "#ffffff",
-                        font: { size: 11, family: "Poppins", weight: "bold" },                
+                        font: { size: 11, family: "Poppins", weight: "bold" },
                         formatter: (_, context) => context.chart.data.labels[context.dataIndex],
                     },
                 },
@@ -108,14 +106,26 @@ document.addEventListener("DOMContentLoaded", function () {
             tabButtons.forEach(tab => tab.disabled = true);
             wheelElement.style.transition = "transform 4s ease-out";
             wheelElement.style.transform = `rotate(${finalRotation}deg)`;
-            setTimeout(() => {    
-                button.disabled = false;
-                tabButtons.forEach(tab => tab.disabled = false);
+            setTimeout(() => {
                 let resultadoFinal = roletas[roleta][selectedIndex];
                 resultElement.innerHTML = `🎉 Escolhido: <strong>${resultadoFinal}</strong>`;
                 startConfetti();
+                button.disabled = false;
+                tabButtons.forEach(tab => tab.disabled = false);
             }, 4000);
         });
+    });
+
+    document.getElementById("add-btn").addEventListener("click", () => {
+        let newItem = document.getElementById("new-item").value.trim();
+        if (newItem) {
+            if (roletas.custom.length === 1 && roletas.custom[0] === "Adicione Itens") {
+                roletas.custom = [];
+            }
+            roletas.custom.push(newItem);
+            document.getElementById("new-item").value = "";
+            updateWheel("custom", document.getElementById("wheel-custom"));
+        }
     });
 
     updateWheel("places", document.getElementById("wheel-places"));
