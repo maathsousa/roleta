@@ -171,4 +171,9 @@ h2{
     .wrapper {
         font-size: 12px;
     }
+
+     #new-item{
+        padding: 9px 30px 9px 10px;
+        left: 30px;
+    }
 }
