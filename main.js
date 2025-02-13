@@ -1,129 +1,132 @@
-const wheel = document.getElementById("wheel");
-const spinBtn = document.getElementById("spin-btn");
-const finalValue = document.getElementById("final-value");
-const newValueInput = document.getElementById("new-value");
-const addBtn = document.getElementById("add-btn");
+document.addEventListener("DOMContentLoaded", function () {
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabContents = document.querySelectorAll(".tab-content");
 
-let items = [];
-let data = [];
-let pieColors = [];
-let myChart = null;
+    tabButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const targetTab = button.dataset.tab;
 
-// Tons mais suaves
-const originalColors = ["#ff9999", "#ff6666", "#ff4d4d", "#ff3333", "#ff1a1a", "#cc0000"];
+            tabButtons.forEach(btn => btn.classList.remove("active"));
+            tabContents.forEach(tab => tab.classList.remove("active"));
 
-function updateWheel() {
-    if (items.length === 0) return;
+            button.classList.add("active");
+            document.getElementById(targetTab).classList.add("active");
+        });
+    });
 
-    let sliceSize = 100 / items.length;
-    data = new Array(items.length).fill(sliceSize);
-    pieColors = items.map((_, i) => originalColors[i % originalColors.length]);
+    const roletas = {
+        places: ["Cinema", "Parque", "Shopping", "Restaurante", "Pizzaria", "Teatro", "Museu", "Praia"],
+        foodin: ["Nhoque", "Fazer Pizza", "Batata Rústica", "Hot Dog", "Massa", "Brusqueta", "Tábua de Frios", "Guacamole"],
+        foodout: ["Pizza", "Japonês", "Hamburguer", "Churrasco", "Italiano", "Barzinho", "Mexicano", "Podrão"],
+        custom: []
+    };
 
-    if (myChart) {
-        myChart.destroy();
-    }
+    let myCharts = {};
 
-    myChart = new Chart(wheel, {
-        plugins: [ChartDataLabels],
-        type: "pie",
-        data: {
-            labels: items.map((item) => item.value),
-            datasets: [{ backgroundColor: pieColors, data: data }],
-        },
-        options: {
-            responsive: true,
-            animation: { duration: 0 },
-            plugins: {
-                tooltip: false,
-                legend: { display: false },
-                datalabels: {
-                    color: "#ffffff",
-                    font: { size: 20 },
-                    formatter: (_, context) => context.chart.data.labels[context.dataIndex],
+    function updateWheel(roleta, wheelElement) {
+        // Se a roleta personalizada estiver vazia, exibe "Adicione Itens"
+        if (roleta === "custom" && roletas.custom.length === 0) {
+            roletas.custom = ["Adicione Itens"];
+        }
+
+        let sliceSize = 100 / roletas[roleta].length;
+        let data = new Array(roletas[roleta].length).fill(sliceSize);
+        let colors = ["#ff3131", "#9f1717"];
+        let pieColors = roletas[roleta].map((_, i) => colors[i % colors.length]);
+
+        if (myCharts[roleta]) {
+            myCharts[roleta].destroy();
+        }
+
+        myCharts[roleta] = new Chart(wheelElement, {
+            plugins: [ChartDataLabels],
+            type: "pie",
+            data: {
+                labels: roletas[roleta],
+                datasets: [{ backgroundColor: pieColors, data: data }],
+            },
+            options: {
+                responsive: true,
+                animation: { duration: 0 },
+                plugins: {
+                    tooltip: false,
+                    legend: { display: false },
+                    datalabels: {
+                        color: "#ffffff",
+                        font: { size: 11, family: "Poppins", weight: "bold"},                
+                        formatter: (_, context) => context.chart.data.labels[context.dataIndex],
+                    },
                 },
             },
-        },
+        });
+    }
+
+    document.querySelectorAll(".spin-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            let roleta = button.dataset.wheel;
+            let wheelElement = document.getElementById(`wheel-${roleta}`);
+            let resultElement = document.getElementById(`result-${roleta}`);
+            let tabButtons = document.querySelectorAll(".tab-btn");
+    
+            let numItens = roletas[roleta].length;
+            let anglePerItem = 360 / numItens; // Quantos graus cada fatia ocupa
+    
+            // 🔥 Pegamos a rotação atual para sempre girar no sentido horário
+            let currentRotation = parseFloat(wheelElement.style.transform.replace(/[^0-9]/g, "")) || 0;
+    
+            // 🔥 Criamos um deslocamento aleatório para garantir que pare em qualquer lugar
+            let randomOffset = Math.random() * anglePerItem; // Pequeno deslocamento aleatório dentro da fatia
+    
+            // 🔥 Calcula a nova rotação incluindo o deslocamento aleatório
+            let baseRotations = 7; // Sempre gira pelo menos 5 voltas completas
+            let extraRotations = Math.floor(Math.random() * 6) + 2; // Rotação aleatória extra (2 a 5 voltas)
+            let finalRotation = currentRotation + (360 * (baseRotations + extraRotations)) + randomOffset;
+    
+            // 🔥 Calcula o índice correto com base na rotação final
+            let stopAngle = finalRotation % 360; // Ângulo final após todas as rotações
+            let selectedIndex = Math.floor(((360 - stopAngle) + anglePerItem / 2) / anglePerItem) % numItens; // Índice correto
+    
+            // 🔥 Desabilita o botão e as abas enquanto gira
+            button.disabled = true;
+            tabButtons.forEach(tab => tab.disabled = true);
+    
+            // 🔥 Aplica a rotação sempre no mesmo sentido (horário)
+            wheelElement.style.transition = "transform 4s ease-out";
+            wheelElement.style.transform = `rotate(${finalRotation}deg)`;
+    
+            // 🔥 Exibe o resultado após a roleta parar e reativa os botões
+            setTimeout(() => {
+                let resultadoFinal = roletas[roleta][selectedIndex];
+                resultElement.innerHTML = `🎉 Escolhido: <strong>${resultadoFinal}</strong>`;
+    
+                button.disabled = false; // Reativa o botão "Rodar"
+                tabButtons.forEach(tab => tab.disabled = false); // Reativa a navegação entre abas
+            }, 4000);
+        });
     });
-}
+    
+    
+    
+    
 
-addBtn.addEventListener("click", () => {
-    let newValue = newValueInput.value.trim();
-    if (newValue) {
-        let index = items.length;
-        items.push({ index, value: newValue });
-        newValueInput.value = "";
-        updateWheel();
-    }
-});
+    document.getElementById("add-btn").addEventListener("click", () => {
+        let newItem = document.getElementById("new-item").value.trim();
+        if (newItem) {
+            // 🔥 Garante que "Adicione Itens" não permaneça na roleta
+            if (roletas.custom.length === 1 && roletas.custom[0] === "Adicione Itens") {
+                roletas.custom = [];
+            }
 
-let count = 0;
-let resultValue = 101;
-
-spinBtn.addEventListener("click", () => {
-    if (items.length === 0) {
-        finalValue.innerHTML = `<p>Adicione valores antes de rodar!</p>`;
-        return;
-    }
-
-    spinBtn.disabled = true;
-    finalValue.innerHTML = "";
-
-    let randomIndex = Math.floor(Math.random() * items.length);
-    let randomDegree = (360 / items.length) * randomIndex;
-
-    let rotationInterval = setInterval(() => {
-        myChart.options.rotation += resultValue;
-        myChart.update();
-
-        if (myChart.options.rotation >= 360) {
-            count += 1;
-            resultValue -= 5;
-            myChart.options.rotation = 0;
-        } else if (count > 15 && Math.abs(myChart.options.rotation - randomDegree) < 5) {
-            clearInterval(rotationInterval);
-            count = 0;
-            resultValue = 101;
-            spinBtn.disabled = false;
-
-            startConfetti();
-            setTimeout(stopConfetti, 3000);
+            roletas.custom.push(newItem);
+            document.getElementById("new-item").value = "";
+            
+            let wheelElement = document.getElementById("wheel-custom");
+            updateWheel("custom", wheelElement);
         }
-    }, 10);
+    });
+
+    updateWheel("places", document.getElementById("wheel-places"));
+    updateWheel("foodin", document.getElementById("wheel-foodin"));
+    updateWheel("foodout", document.getElementById("wheel-foodout"));
+    updateWheel("custom", document.getElementById("wheel-custom"));
 });
-
-/* === Confetes Atualizados === */
-function startConfetti() {
-    const confettiContainer = document.createElement("div");
-    confettiContainer.classList.add("confetti-container");
-    document.body.appendChild(confettiContainer);
-
-    for (let i = 0; i < 200; i++) {
-        let confetti = document.createElement("div");
-        confetti.classList.add("confetti");
-
-        // Posicionamento e tamanhos aleatórios
-        confetti.style.left = Math.random() * 100 + "vw";
-        confetti.style.width = Math.random() * 10 + 5 + "px";
-        confetti.style.height = Math.random() * 20 + 10 + "px";
-        confetti.style.opacity = Math.random() * 0.9 + 0.1;
-
-        // Cor aleatória
-        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-
-        // Animações com tempos aleatórios
-        confetti.style.animationDuration = Math.random() * 5 + 3 + "s"; // Entre 3s e 8s
-        confetti.style.animationDelay = Math.random() * 2 + "s"; // Pequeno atraso
-
-        confettiContainer.appendChild(confetti);
-    }
-}
-
-function stopConfetti() {
-    setTimeout(() => {
-        const confettiContainer = document.querySelector(".confetti-container");
-        if (confettiContainer) {
-            confettiContainer.remove();
-        }
-    }, 8000);
-}
-

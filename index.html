@@ -1,39 +1,76 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Roleta do amor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet"/>    <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h1>Roleta do Amor</h1>
-    <div class="wrapper">
-      <div class="container">
-        <canvas id="wheel"></canvas>
-        <button id="spin-btn">Rodar</button>
-        <img src="seta.png" alt="spinner-arrow" />
-      </div>
-      <div id="final-value">
-        <p>Adicione os Itens abaixo!! </p>
-      </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta do Amor 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Roleta do Amor 💖</h1>
 
+    <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="places">Lugares</button>
+        <button class="tab-btn" data-tab="foodin">Fazer Comida</button>
+        <button class="tab-btn" data-tab="foodout">Comer Fora</button>
+        <button class="tab-btn" data-tab="custom">Personalizado</button>
+    </nav>
 
-      <div class="input-container">
-        <input type="text" id="new-value" placeholder="Adicione um item" />
-        <button id="add-btn">Adicionar</button>
-      </div>
-      
-
+    <div class="tab-content active" id="places">
+        <div class="wrapper">
+            <h2>Onde Vamos?</h2>
+            <div class="wheel-container">
+                <canvas id="wheel-places"></canvas>
+                <div class="pointer"></div> 
+            </div>
+            <button class="spin-btn" data-wheel="places">Rodar</button>
+            <div class="result" id="result-places"></div>
+        </div>
     </div>
 
-   
-      
-    <!-- Chart JS -->
+    <div class="tab-content" id="foodin">
+        <div class="wrapper">
+            <h2>O que vamos cozinhar?</h2>
+            <div class="wheel-container">
+                <canvas id="wheel-foodin"></canvas>
+                <div class="pointer"></div> 
+            </div>
+            <button class="spin-btn" data-wheel="foodin">Rodar</button>
+            <div class="result" id="result-foodin"></div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="foodout">
+        <div class="wrapper">
+            <h2>O que Comer?</h2>
+            <div class="wheel-container">
+                <canvas id="wheel-foodout"></canvas>
+                <div class="pointer"></div> 
+            </div>
+            <button class="spin-btn" data-wheel="foodout">Rodar</button>
+            <div class="result" id="result-foodout"></div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="custom">
+        <div class="wrapper">
+            <h2>Monte sua Roleta</h2>
+            <div class="wheel-container">
+                <canvas id="wheel-custom"></canvas>
+                <div class="pointer"></div> 
+            </div>
+            <button class="spin-btn" data-wheel="custom">Rodar</button>
+            <div class="result" id="result-custom"></div>
+            <div class="input-container">
+                <input type="text" id="new-item" placeholder="Adicione um item">
+                <button id="add-btn">Adicionar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <!-- Chart JS Plugin for displaying text over chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.1.0/chartjs-plugin-datalabels.min.js"></script>
-    <!-- Script -->
     <script src="main.js"></script>
-  </body>
+</body>
 </html>
